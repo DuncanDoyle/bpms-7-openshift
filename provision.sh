@@ -189,13 +189,17 @@ function print_info() {
 function pre_condition_check() {
   echo_header "Checking pre-conditions"
   echo_header "Testing connection to Red Hat Engineering Docker Registry"
+  # Disable "set -e" as we want to check for exit conditions when "ping" returns non-zero so we can print a proper error message."
+  set +e
   ping -q -c5 docker-registry.engineering.redhat.com  > /dev/null
   if [ $? -eq 0 ]
   then
     echo "ok"
   else
     echo "Host unreachable, unable to retrieve OpenShift BPM Suite images. Please enable your Red Hat VPN to continue the setup."
+    exit 1
   fi
+  set -e
 }
 
 # waits while the condition is true until it becomes false or it times out
